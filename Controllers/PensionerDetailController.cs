@@ -28,22 +28,6 @@ namespace MFRP_Pension_Detail.Controllers
         {
             configuration = iConfig;
         }
-        /// <summary>
-        /// Getting the details of the pensioner details from csv file 
-        /// </summary>
-        /// <returns> pensioner Values</returns>
-       
-        // GET: api/PensionerDetail
-        //[HttpGet]
-        //public List<PensionerDetail> Get()
-        //{
-        //    List<PensionerDetail> pensionDetails = GetDetailsCsv();
-        //    _log4net.Info("Pensioner details invoked!");
-        //    return pensionDetails.ToList();
-
-        //}
-
-
         ///Summary
         ///Getting the details of the pensioner details from csv file by giving Aadhar Number
         ///Summary
@@ -57,12 +41,10 @@ namespace MFRP_Pension_Detail.Controllers
             _log4net.Info("Pensioner details invoked by Aadhar Number!");
             return pensionDetails.FirstOrDefault(s => s.AadharNumber == aadhar);
         }
-
         ///Summary
         /// Getting the Values from Csv File 
         ///Summary
         /// <returns> Returning the list of values</returns>
-       
         private List<PensionerDetail> GetDetailsCsv()
         {
             _log4net.Info("Data is read from CSV file");  // Logging Implemented
@@ -76,21 +58,22 @@ namespace MFRP_Pension_Detail.Controllers
                     while ((line = sr.ReadLine()) != null)
                     {
                         string[] values = line.Split(',');
-                        //Adding the values from file
                         pensionerdetail.Add(new PensionerDetail() { Name = values[0], Dateofbirth = Convert.ToDateTime(values[1]), Pan = values[2], AadharNumber = values[3], SalaryEarned = Convert.ToInt32(values[4]), Allowances = Convert.ToInt32(values[5]), PensionType = (PensionTypeValue)Enum.Parse(typeof(PensionTypeValue), values[6]), BankName = values[7], AccountNumber = values[8], BankType = (BankType)Enum.Parse(typeof(BankType), values[9]) });
-                        //  Console.WriteLine(values[0]);
                     }
 
                 }
             }
             catch (NullReferenceException e)
             {
-                //Console.WriteLine("Values not found",e);
+                _log4net.Error("Values cannot be fetched from the Csv file"+e);
                 return null;
             }
-            return pensionerdetail.ToList();  
+            catch(Exception e)
+            {
+                _log4net.Error("Values cannot be fetched from the Csv file" + e);
+                return null;
+            }
+            return pensionerdetail.ToList();
         }
-
-
     }
 }
